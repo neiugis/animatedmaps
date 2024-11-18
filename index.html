@@ -50,7 +50,7 @@
         
         // Define the circleMarker style
     const pointStyle = {
-        radius: 6,               // Size of the red dot
+        radius: 2,               // Size of the red dot
         fillColor: "red",        // Fill color (red)
         color: "red",            // Border color
         weight: 1,               // Border width
@@ -60,7 +60,7 @@
 
      // List of GeoJSON files (each representing a timestamp)
 const geojsonFiles = [
-//    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2020.geojson', // Replace with actual file paths
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2020.geojson', // Replace with actual file paths
     'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2021.geojson',
     'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2022.geojson',
     'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2023.geojson'
@@ -73,6 +73,12 @@ function loadGeoJson(url) {
         .then(data => {
             geojsonLayer.clearLayers(); // Clear previous layer
         
+    geojsonLayer = L.geoJson(data, {
+                pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, pointStyle); // Apply the defined style
+                },
+           
+            }).addTo(map); // Add updated layer to the map
             geojsonLayer.addData(data); // Add new data
         })
         .catch(error => console.error('Error loading GeoJSON:', error));
@@ -99,7 +105,7 @@ let isPaused = false;
 
 function toggleAnimation() {
     isPaused = !isPaused;
-    if (!isPaused) {
+    if (isPaused == false) {
         animateGeoJson();
     }
 }

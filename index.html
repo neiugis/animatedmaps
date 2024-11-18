@@ -57,6 +57,34 @@
         opacity: 1,              // Border opacity
         fillOpacity: 0.8         // Fill opacity
     };
+        
+               
+        // Define labels for the GeoJSON layers
+const layerLabels = {
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2020.geojson': 'Arson 2020',
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2021.geojson': 'Arson 2021',
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2022.geojson': 'Arson 2022',
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2023.geojson': 'Arson 2023'
+};
+        
+        // Add a legend to the map
+const legend = L.control({ position: 'bottomright' });
+
+legend.onAdd = function () {
+    const div = L.DomUtil.create('div', 'legend');
+    div.innerHTML = '<h4>Current Layer</h4>'; // Initial legend content
+    return div;
+};
+
+legend.addTo(map);
+
+// Function to dynamically update the legend
+function updateLegend(label) {
+    const legendDiv = document.querySelector('.legend');
+    legendDiv.innerHTML = `<h4>Current Layer</h4><p>${label}</p>`;
+}
+
+
 
      // List of GeoJSON files (each representing a timestamp)
 const geojsonFiles = [
@@ -80,6 +108,10 @@ function loadGeoJson(url) {
            
             }).addTo(map); // Add updated layer to the map
             geojsonLayer.addData(data); // Add new data
+        
+        
+          const currentLabel = layerLabels[url] || 'Unknown Layer';
+            updateLegend(currentLabel);
         })
         .catch(error => console.error('Error loading GeoJSON:', error));
 }
@@ -128,8 +160,8 @@ playPauseButton.onAdd = function () {
 };
 
 playPauseButton.addTo(map);
-
-
+        
+ 
     </script>
 </body>
 </html>

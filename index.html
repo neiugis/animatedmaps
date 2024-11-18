@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Maps</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 100vh;
+        }
+
+        
+          /* Optional: adjust the values below to change the appearance of the legend */
+  .legend {
+      padding: 6px 8px;
+      line-height: 18px;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 5px;
+  }
+
+   /* Optional: adjust the values below to change the appearance of the legend color boxes */
+   .legend i {
+      width: 18px;
+      height: 18px;
+      float: left;
+      margin-right: 8px;
+      opacity: 0.7;
+  }
+        
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([41.8070363,-87.5408951], 10); // Adjust view based on your region
+
+        // Add a basemap
+        var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+        maxZoom: 16
+    }).addTo(map);
+
+     // List of GeoJSON files (each representing a timestamp)
+const geojsonFiles = [
+    'arson2020.geojson', // Replace with actual file paths
+    'arson2021.geojson',
+    'arson2022.geojson',
+    'arson2023.geojson'
+];
+
+// Function to load and display a GeoJSON file
+function loadGeoJson(url) {
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            geojsonLayer.clearLayers(); // Clear previous layer
+            geojsonLayer.addData(data); // Add new data
+        })
+        .catch(error => console.error('Error loading GeoJSON:', error));
+}
+
+// Animate through the GeoJSON files
+let currentIndex = 0;
+function animateGeoJson() {
+    if (currentIndex < geojsonFiles.length) {
+        loadGeoJson(geojsonFiles[currentIndex]);
+        currentIndex++;
+        setTimeout(animateGeoJson, 1000); // Adjust delay (in milliseconds)
+    } else {
+        currentIndex = 0; // Reset animation (optional)
+    }
+}
+
+// Start the animation
+animateGeoJson();
+
+    
+        // Pause and Play functionality
+let isPaused = false;
+
+function toggleAnimation() {
+    isPaused = !isPaused;
+    if (!isPaused) {
+        animateGeoJson();
+    }
+}
+
+// Add a button to toggle animation
+const playPauseButton = L.control({ position: 'topright' });
+
+playPauseButton.onAdd = function () {
+    const div = L.DomUtil.create('div', 'play-pause-control');
+    div.innerHTML = '<button id="play-pause">Pause</button>';
+    div.style.padding = '5px';
+    div.style.backgroundColor = 'white';
+    div.style.borderRadius = '5px';
+    div.style.cursor = 'pointer';
+    div.onclick = function () {
+        toggleAnimation();
+        document.getElementById('play-pause').textContent = isPaused ? 'Play' : 'Pause';
+    };
+    return div;
+};
+
+playPauseButton.addTo(map);
+
+
+    </script>
+</body>
+</html>

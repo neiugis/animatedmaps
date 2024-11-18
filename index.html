@@ -45,13 +45,25 @@
         attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
         maxZoom: 16
     }).addTo(map);
+        
+         let geojsonLayer = L.geoJson().addTo(map);
+        
+        // Define the circleMarker style
+    const pointStyle = {
+        radius: 6,               // Size of the red dot
+        fillColor: "red",        // Fill color (red)
+        color: "red",            // Border color
+        weight: 1,               // Border width
+        opacity: 1,              // Border opacity
+        fillOpacity: 0.8         // Fill opacity
+    };
 
      // List of GeoJSON files (each representing a timestamp)
 const geojsonFiles = [
-    'arson2020.geojson', // Replace with actual file paths
-    'arson2021.geojson',
-    'arson2022.geojson',
-    'arson2023.geojson'
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2020.geojson', // Replace with actual file paths
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2021.geojson',
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2022.geojson',
+    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2023.geojson'
 ];
 
 // Function to load and display a GeoJSON file
@@ -60,6 +72,14 @@ function loadGeoJson(url) {
         .then(response => response.json())
         .then(data => {
             geojsonLayer.clearLayers(); // Clear previous layer
+        
+        // Add GeoJSON data with external circleMarker style
+                geojsonLayer = L.geoJson(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, pointStyle); // Use the global style
+                    },
+                 
+                });
             geojsonLayer.addData(data); // Add new data
         })
         .catch(error => console.error('Error loading GeoJSON:', error));

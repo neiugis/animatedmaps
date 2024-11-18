@@ -60,7 +60,7 @@
 
      // List of GeoJSON files (each representing a timestamp)
 const geojsonFiles = [
-    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2020.geojson', // Replace with actual file paths
+//    'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2020.geojson', // Replace with actual file paths
     'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2021.geojson',
     'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2022.geojson',
     'https://raw.githubusercontent.com/neiugis/animatedmaps/refs/heads/main/arson2023.geojson'
@@ -73,13 +73,6 @@ function loadGeoJson(url) {
         .then(data => {
             geojsonLayer.clearLayers(); // Clear previous layer
         
-        // Add GeoJSON data with external circleMarker style
-                geojsonLayer = L.geoJson(data, {
-                    pointToLayer: function (feature, latlng) {
-                        return L.circleMarker(latlng, pointStyle); // Use the global style
-                    },
-                 
-                });
             geojsonLayer.addData(data); // Add new data
         })
         .catch(error => console.error('Error loading GeoJSON:', error));
